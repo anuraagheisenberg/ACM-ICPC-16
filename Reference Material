@@ -1,1 +1,160 @@
+//BLOCK 1 //NAIVE call modInverse(a,m) where a^-1%m;
+int modInverse(int a, int m){   a = a%m;
+   for (int x=1; x<m; x++)  if ((a*x) % m == 1) return x; }//BLOCK1 ends
+
+//BLOCK 2 log(m) works only if m is prime CALL modinverse(a,m)
+void modInverse(int a, int m){//START  int g=gcd(a, m);//make own
+if(g!=1) cout << "Inverse doesn't exist";
+else{cout<<"Modular inverse" <<power(a, m-2, m);}  }
+// To compute x^y under modulo m
+int power(int x,int y, int m){if(y==0)return 1;int p=power(x,y/2,m)%m; p=(p*p)%m; return (y%2==0)?p:(x*p)%m;}//BLOCK 2 ends
+
+//BLOCK3 extended Euclid algorithm a,m are coprime
+int modInverse(int a, int m){  int m0=m, t, q; int x0 = 0, x1 = 1;  if(m==1) return 0; while(a>1){ q=a/m; t=m; m=a%m; a=t; t=x0; x0=x1-q*x0; x1=t; }    if (x1 < 0)  x1+=m0; return x1; } //BLOCK3 ends
+
+//BLOCK4 Calculating Prime Factors
+// log n time
+bool prime[10000001]; int minip[10000001]; lll mppp[10000001];
+void modifiedsieve() 
+{ memset(prime, true, sizeof(prime)); prime[1]=false;
+for(lll i=2;i<=10000000;i+=2) { prime[i]=false; minip[i]=2; } prime[2]=true;  minip[1]=1;
+for(lll pp=3;pp*pp<=10000000;pp+=2) if(prime[pp]==true){ minip[pp]=pp;
+for(lll i=pp;i*pp<=10000000;i+=2){ if(prime[i*pp]==true) 
+{ prime[i*pp]=false; minip[i*pp]=pp; } }} }
+void calprime(lll no)
+{ lll mno=no; if(!num[mno].size()) while(no!=1) {
+if(prime[no]==true) minip[no]=no; num[mno].push_back(minip[no]);
+lll pp=minip[no]; while(no%pp==0) no=no/pp; } } // BLOCK 4 ends
+
+//BLOCK 5// Z ALGO search(text,pattern) O(n) time 
+void search(string text, string pattern)
+{ string concat=pattern+"$"+text;int l=concat.length();
+    int Z[l]; getZarr(concat, Z);
+for(int i=0;i<l;++i) { if(Z[i] == pattern.length()) 
+ cout<<"Pattern found"<<i-pattern.length()-1<< endl;} }
+
+void getZarr(string str, int Z[]){ int n=str.length();int L,R,k; L = R = 0;
+for(int i = 1; i < n; ++i){
+if(i>R){L=R=i; while(R<n&&str[R-L]==str[R]) R++; Z[i]=R-L; R--; }
+else { k = i-L; if (Z[k] < R-i+1) Z[i]=Z[k]; else{ L=i;
+while(R<n&&str[R-L]==str[R]) R++; Z[i]=R-L;R--; }}}} //BLOCK 5 ends  
+
+// BLOCK 6 SQRT Decomposition
+// to find no of distinct numbers in a given range,, queries 1000000
+#define N 311111 #define A 1111111 #define BLOCK 555// ~sqrt(N)
+int cnt[A],a[N],ans[N],answer=0;
+struct node
+{ int L, R, i; }q[N]; 
+bool cmp(node x, node y)
+{ if(x.L/BLOCK != y.L/BLOCK) { return x.L/BLOCK < y.L/BLOCK; } return x.R < y.R; }
+void add(int position){ cnt[a[position]]++;
+if(cnt[a[position]]==1){ answer++; } }
+void remove(int position){ cnt[a[position]]--;
+if(cnt[a[position]]==0){ answer--; } }
+int main(){ int n; scanf("%d", &n);
+for(int i=0;i<n;i++) scanf("%d",&a[i]); int m; scanf("%d",&m);
+for(int i=0;i<m;i++){ scanf("%d%d",&q[i].L,&q[i].R);
+q[i].L--; q[i].R--;q[i].i=i;} sort(q,q+m,cmp);int currentL=0,currentR=0;
+for(int i=0; i<m; i++) { int L=q[i].L;R=q[i].R;
+while(currentL < L){ remove(currentL); currentL++; }
+while(currentL > L) { add(currentL-1); currentL--; }
+while(currentR <= R){ add(currentR); currentR++; }
+while(currentR > R+1){ remove(currentR-1);currentR--; }
+ans[q[i].i] = answer;}
+for(int i=0; i<m; i++) printf("%d\n",ans[i]); }// BLOCK 6 ends
+
+//BLOCK 7 simple bfs for level of each node
+vector<int>v[10];int level[10];bool vis[10]; 
+void bfs(int s){ queue <int>q; q.push(s); level[s]=0; vis[s]=true;
+while(!q.empty()){ int p=q.front();q.pop();for(int i=0;i<v[p].size();i++) { if(vis[v[p][i]]==false){level[v[p][i]]=level[p]+1;q.push(v[p][i]);vis[v[p][i]]=true;}}}}  //BLOCK7ends
+
+//BLOCK 8 max lenght path,, max val is max path
+void dfss(lll s,lll v) { visit[s]=true; for(lll i=0;i<vecc[s].size();i++) { lll neigh=vecc[s][i]; if(visit[neigh]==false){ visit[neigh]=true;dfss(neigh,v+1);val[s]=max(val[s],1+val[neigh]);maval=max(maxval,val[s]); }
+else{val[s]=max(val[s],1+val[neigh]);maxval=max(maxval,val[s]); } }}
+//BLOCK 8 ends
+//BLOCK 9 UNION FIND DISJOINT SET Check with Arr[]
+void initialize( int Arr[ ], int N){ for(int i = 0;i<N;i++) { Arr[i]=i; size[i]=1;}} void weighted-union(int Arr[ ],int size[ ],int A,int B)
+{ int root_A=root(A); int root_B = root(B); if(size[root_A]<size[root_B ])
+{ Arr[root_A]=Arr[root_B]; size[root_B]+=size[root_A]; }
+else{Arr[root_B]=Arr[root_A];size[root_A]+=size[root_B];}}
+int root(int Arr[],int i) {while(Arr[i]!=i){Arr[i]=Arr[Arr[i]];i=Arr[i]; } return i;}  // BLOCK 9 ends
+
+//Block 10 Krushkal Algo
+const int MAX=1e4+5; int id[MAX],nodes,edges;
+pair <long long,pair<int,int>>p[MAX];
+long long kruskal(pair<long long, pair<int, int> > p[]){
+int x, y; long long cost, minimumCost = 0;
+for(int i = 0;i < edges;++i){ x = p[i].second.first; y = p[i].second.second; cost = p[i].first;
+if(root(id,x) != root(id,y)) { minimumCost += cost; weighted-union1(id,x, y); } } return minimumCost; }  //BLOCK 10 ends
+
+//Block 11 Articulate points bool array art if 1 then 1 else no
+const int MAX = 1000001;int n;vector<int > graph[100001];
+int color[MAX],arr_time[MAX],LOW[MAX],pred[MAX];int tym=0;bool art[MAX];
+int Art_point(int src){ color[src] = 1;LOW[src] = arr_time[src] = ++tym;
+for (int i = 0; i < graph[src].size(); ++i)
+{ int w = graph[src][i]; if(!color[w]) { pred[w] = src;
+Art_point(w); if(pred[src] == -1) { if(i >= 1) art[src] = true; }
+else if(LOW[w] >= arr_time[src]) art[src] = true;
+LOW[src] = min(LOW[src], LOW[w]); }
+else if(w != pred[src]) {LOW[src] = min(LOW[src], arr_time[w]);} }
+color[src] = 2; }  // Block 11 ends
+
+// BLOCK 12 //ADDMUL seg tree
+struct segtree{
+lll val; lll mul=1; lll add=0; lll replace=0; };
+segtree tree[1000001]; lll arr[1000001];
+void makechange(lll node,lll start,lll end) {
+if(start<=end){
+if(tree[node].replace!=0)
+{
+tree[node].val=(end-start+1)*tree[node].replace;
+tree[node].val%=mod;
+if(start!=end){
+tree[node*2].replace=tree[node].replace;
+tree[node*2+1].replace=tree[node].replace;
+tree[node*2].mul=1;tree[node*2+1].add=0;
+tree[node*2+1].mul=1;tree[node*2].add=0; } tree[node].replace=0;}
+if(tree[node].mul!=1||tree[node].add!=0)
+{tree[node].val=tree[node].val*tree[node].mul+tree[node].add*(end-start+1);
+tree[node].val%=mod;
+if(start!=end){
+tree[node*2].mul=tree[node*2].mul*tree[node].mul;
+tree[node*2+1].mul=tree[node*2+1].mul*tree[node].mul;
+tree[node*2].add=tree[node*2].add*tree[node].mul+tree[node].add;
+tree[node*2+1].add=tree[node*2+1].add*tree[node].mul+tree[node].add;}
+tree[node].mul=1; tree[node].add=0;}}}
+void build(lll node,lll start,lll end)
+{ if(start==end) { tree[node].val=arr[start]; tree[node].val%=mod; return; }
+ else { lll mid=(start+end)/2; build(2*node,start,mid);
+build(2*node+1,mid+1,end); tree[node].val=(tree[2*node].val%mod+tree[2*node+1].val%mod)%mod; } }
+void update3(lll node,lll start,lll end,lll l,lll r,lll val)
+{
+    makechange(node,start,end);
+   /* if(lazy[node]!=0)
+    { 
+        tree[node].value+=(end-start+1)*lazy[node].value;   
+        if(start!=end)
+        {
+            lazy[node*2]+=lazy[node];                  
+            lazy[node*2+1]+=lazy[node];                
+        }
+        lazy[node] = 0;                                  
+    }*/
+
+    if(start>end||start>r||end < l)   return;
+   if(start>=l&&end <= r) { tree[node].val+=(end-start+1)*val;
+  if(start!=end) { /*lazy[node*2]+= val; lazy[node*2+1]+= val;*/
+tree[node*2].add+=val; tree[node*2].add+=val; } return; }
+lll mid=(start+end)/2; update3(node*2,start,mid,l,r,val);      
+update3(node*2+1,mid+1,end,l,r,val);       tree[node].val=(tree[2*node].val%mod+tree[2*node+1].val%mod)%mod; }
+lll query(lll node, lll start, lll end, lll l, lll r)// for range
+{ if(start>end||start>r||end < l) return 0;         
+  /*  if(lazy[node]!=0){ tree[node]+=(end-start+1)*lazy[node];     
+        if(start != end){ lazy[node*2]+=lazy[node]; lazy[node*2+1]+=lazy[node]; }
+       lazy[node]=0;      
+    }*/
+    makechange(node,start,end);
+    if(start>=l&&end<=r)  return tree[node].val%mod;
+    lll mid=(start+end)/2;lll p1=query(node*2,start,mid,l,r);    
+    lll p2=query(node*2+1,mid+1,end,l,r); return(p1+p2)%mod;}// BLOCK 12 ends
 
